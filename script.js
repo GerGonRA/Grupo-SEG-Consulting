@@ -155,7 +155,8 @@ if (contactForm) {
         const formData = new FormData(contactForm);
         
         try {
-            const response = await fetch('https://formsubmit.co/ajax/tu-correo@dominio.com', {
+            // IMPORTANTE: Aquí va tu correo real
+            const response = await fetch('https://formsubmit.co/ajax/gyaconsultores.servicios@gmail.com', {
                 method: 'POST',
                 body: formData,
                 headers: { 
@@ -165,21 +166,20 @@ if (contactForm) {
 
             const result = await response.json();
 
-            if (result.success === "true" || response.ok) {
-                const successModal = document.getElementById('modal-success');
-                const errorModal = document.getElementById('modal-error');
-                if (successModal) successModal.style.display = 'block';
-                if (errorModal) errorModal.style.display = 'none';
+            // Verificamos si FormSubmit devolvió éxito
+            if (response.ok && (result.success === "true" || result.success === true)) {
+                document.getElementById('modal-success').style.display = 'block';
+                document.getElementById('modal-error').style.display = 'none';
                 contactForm.reset();
             } else {
-                throw new Error('Error en la respuesta del servidor');
+                throw new Error('Error en el servidor');
             }
         } catch (error) {
-            console.error("Error:", error);
-            const successModal = document.getElementById('modal-success');
-            const errorModal = document.getElementById('modal-error');
-            if (successModal) successModal.style.display = 'none';
-            if (errorModal) errorModal.style.display = 'block';
+            console.error("Error al enviar:", error);
+            document.getElementById('modal-success').style.display = 'none';
+            document.getElementById('modal-error').style.display = 'block';
+        } finally {
+            // El overlay de carga se puede ocultar aquí si los modales no lo cubren
         }
     });
 }
